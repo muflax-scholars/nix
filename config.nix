@@ -29,16 +29,17 @@ gitAnnexStatic = haskellPackages.gitAnnex.override {
 
 muHaskell = pkgs.buildEnv {
   name = "muHaskell";
-  paths = [
-    (haskellPackages.ghcWithPackages (hs : [
+  paths = let
+    hs = haskellPackages;
+  in [
+      hs.cabalInstall
+      hs.ghc
+      hs.ghcMod
+
       darcs
       gitAnnexStatic
-
-      hs.ghcMod
       hs.pandoc
-    ]))
-  ];
-
+    ];
 };
 
 muLisp = pkgs.buildEnv {
