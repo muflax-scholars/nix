@@ -30,12 +30,12 @@ gitAnnexStatic = haskellPackages.gitAnnex.override {
 muHaskell = pkgs.buildEnv {
   name = "muHaskell";
   paths = [
-    (haskellPackages.ghcWithPackages (self : [
-      #haskellPlatform
-      self.pandoc
+    (haskellPackages.ghcWithPackages (hs : [
+      darcs
       gitAnnexStatic
-      # self.ghcMod
 
+      hs.ghcMod
+      hs.pandoc
     ]))
   ];
 
