@@ -13,6 +13,7 @@ munix = pkgs.buildEnv {
 
     # big, annoying packages
     libreoffice
+    torbrowser
     wine
     winetricks
 
