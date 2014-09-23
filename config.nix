@@ -6,8 +6,39 @@ packageOverrides = pkgs: with pkgs; rec {
 munix = pkgs.buildEnv {
   name = "munix";
   paths = [
-  	# nix-related
-  	nox
+    # nix-related
+    nox
+
+    # meta
+    muHaskell
+    muLisp
+    muRust
+  ];
+};
+
+cabalStatic = haskellPackages.cabal.override {
+  enableStaticLibraries  	= true;
+  enableSharedLibraries  	= false;
+  enableSharedExecutables	= false;
+};
+
+gitAnnexStatic = haskellPackages.gitAnnex.override {
+  cabal = cabalStatic;
+};
+
+muHaskell = pkgs.buildEnv {
+  name = "muHaskell";
+  paths = [
+    (haskellPackages.ghcWithPackages (self : [
+      #haskellPlatform
+      self.pandoc
+      gitAnnexStatic
+      # self.ghcMod
+
+    ]))
+  ];
+
+};
   ];
 };
 
