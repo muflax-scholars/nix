@@ -7,11 +7,18 @@ munix = pkgs.buildEnv {
   name = "munix";
   paths = [
     # nix-related
+    nix-prefetch-scripts
     nix-repl
     nox
 
+    # big, annoying packages
+    libreoffice
+    wine
+    winetricks
+
     # meta
     muJ
+    muJava
     muGo
     muHaskell
     muLisp
@@ -95,6 +102,13 @@ muML = pkgs.buildEnv {
     # hamlet #missing
     polyml
     smlnj
+  ];
+};
+
+muJava = pkgs.buildEnv {
+  name = "muJava";
+  paths = [
+    icedtea7_jdk
   ];
 };
 
