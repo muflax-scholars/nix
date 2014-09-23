@@ -11,8 +11,11 @@ munix = pkgs.buildEnv {
     nox
 
     # meta
+    muJ
+    muGo
     muHaskell
     muLisp
+    muML
     muRust
   ];
 };
@@ -32,14 +35,20 @@ muHaskell = pkgs.buildEnv {
   paths = let
     hs = haskellPackages;
   in [
+      # coding
       hs.cabalInstall
+      hs.cabal2nix
       hs.ghc
       hs.ghcMod
 
+      # tools
       darcs
       gitAnnexStatic
       hs.pandoc
-    ];
+
+      # meta
+      # hs.idris
+  ];
 };
 
 muLisp = pkgs.buildEnv {
@@ -66,7 +75,28 @@ muRust = pkgs.buildEnv {
   ];
 };
 
+muGo = pkgs.buildEnv {
+  name = "muGo";
+  paths = [
+    # go # build fails
+  ];
+};
 
+muJ = pkgs.buildEnv {
+  name = "muJ";
+  paths = [
+    # j # broken
+  ];
+};
+
+muML = pkgs.buildEnv {
+  name = "muML";
+  paths = [
+    # hamlet #missing
+    polyml
+    smlnj
+  ];
+};
 
 };
 
