@@ -12,10 +12,9 @@ munix = pkgs.buildEnv {
     nox
 
     # big, annoying packages
-    libreoffice
+    [libreoffice unoconv]
+    [wine winetricks]
     torbrowser
-    wine
-    winetricks
 
     # meta
     muJ
