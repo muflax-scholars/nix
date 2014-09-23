@@ -100,6 +100,9 @@ muJ = pkgs.buildEnv {
 muML = pkgs.buildEnv {
   name = "muML";
   paths = [
+    ocaml
+    ocamlPackages.ocaml_batteries
+
     # hamlet #missing
     polyml
     smlnj
