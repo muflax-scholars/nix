@@ -7,6 +7,7 @@ munix = pkgs.buildEnv {
   name = "munix";
   paths = [
     # nix-related
+    nix-repl
     nox
 
     # meta
@@ -39,8 +40,32 @@ muHaskell = pkgs.buildEnv {
   ];
 
 };
+
+muLisp = pkgs.buildEnv {
+  name = "muLisp";
+  paths = [
+    # common lisp
+    sbcl
+    clisp
+    ccl # clozurecl
+    ecl
+
+    # scheme
+    chibi
+    chicken
+    # guile
+    racket
   ];
 };
+
+muRust = pkgs.buildEnv {
+  name = "muRust";
+  paths = [
+    rustcMaster
+  ];
+};
+
+
 
 };
 
