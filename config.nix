@@ -5,15 +5,66 @@ packageOverrides = self: with pkgs; rec {
 # standard environment; this is a bit of a hack until we run NixOS
 munix = pkgs.buildEnv {
   name = "munix";
-  paths = [
+  paths = let
+    hs 	= haskellPackages;
+  in [
     # nix-related
     nix-prefetch-scripts
     nix-repl
     nox
 
-    # big, annoying packages
+    # office-y
     [libreoffice unoconv]
+    (pkgs.texLiveAggregationFun {
+      paths = [ texLive texLiveExtra ];
+    })
+
+    # wm
+    awesome
+    compton
+    dmenu
+    gnome3.gnome_icon_theme
+    gtk-engine-murrine
+    gtk_engines
+    kde4.kde_gtk_config
+    kde4.kde_runtime
+    kde4.kde_workspace
+    nitrogen
+    parcellite
+    redshift
+    slock
+    wmname
+    xcalib
+
+    # vcs
+    cvs
+    bazaar
+    darcs
+    git
+    gitAnnexStatic
+    mercurial
+    subversion
+
+    # coding
+    kde4.konsole
+    silver-searcher
+    xdotool
+    xterm
+
+    # text
+    hs.pandoc
+    kde4.okular
+
+    # misc
+    kde4.kgpg
+    unison
+
+    # games
     [wine winetricks]
+    #zdoom #fails to build
+
+    # web
+    # firefox # needs custom patch
     torbrowser
 
     # meta
@@ -48,13 +99,8 @@ muHaskell = pkgs.buildEnv {
       hs.ghc
       hs.ghcMod
 
-      # tools
-      darcs
-      gitAnnexStatic
-      hs.pandoc
-
       # meta
-      # hs.idris
+      # hs.idris # broken
   ];
 };
 
@@ -102,7 +148,7 @@ muML = pkgs.buildEnv {
     ocaml
     ocamlPackages.ocaml_batteries
 
-    # hamlet #missing
+    # hamlet # missing
     polyml
     smlnj
   ];
