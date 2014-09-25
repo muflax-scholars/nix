@@ -23,18 +23,20 @@ munix = pkgs.buildEnv {
     awesome
     compton
     dmenu
-    gnome3.gnome_icon_theme
-    gtk_engines
-    kde4.kde_gtk_config
-    kde4.kde_runtime
-    kde4.kde_workspace
-    kde4.oxygen_icons
     nitrogen
     parcellite
     redshift
     slock
     wmname
     xcalib
+
+    # themes
+    gnome3.gnome_icon_theme
+    gtk_engines
+    # this is still broken, probably due to non-nixos env; don't care much
+    kde4.kde_gtk_config
+    kde4.kde_runtime
+    kde4.kde_workspace
 
     # vcs
     cvs
