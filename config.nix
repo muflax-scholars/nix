@@ -46,47 +46,120 @@ munix = pkgs.buildEnv {
     subversion
 
     # coding
+    cloc
+    gperftools
+    graphviz
     kde4.konsole
     silver-searcher
+    strace
     xdotool
     xterm
 
+    # compilers and stuff
+    muC
+    muGo
+    muHaskell
+    muJ
+    muJava
+    muJavaScript
+    muLisp
+    muML
+    muRust
+
     # text
+    calibre
+    colordiff
+    convmv
+    dos2unix
     fbreader
     hs.pandoc
+    htmlTidy
     kde4.okular
+    meld
+    pdftk
+    wdiff
+    wkhtmltopdf # giant build :<
+
+    # emacs
+    emacs-patch # needs daemon
+    vim
+
+    # db
+    sqliteInteractive
 
     # misc
     gnupg
+    glxinfo # <3 gears <3
     lsof
+    mc
     parallel
-    pigz
+    pwgen
+    reptyr
+    rlwrap
+    tmux
     unison
+    zsh
+
+    # archives
+    bchunk
+    libarchive
+    pigz
+    p7zip
+    rpm
+    unrar
 
     # games
-    [wine winetricks]
+    cowsay
+    wine
+    winetricks
     #zdoom #fails to build
 
     # web
-    # firefox # needs custom patch
+    aria2
     dropbox-cli
-    irssi
+    firefox-patch
+    links
+    mailutils
     mosh
     mu
     offlineimap
+    quvi
+    rtmpdump
     s3cmd
     torbrowser
     transmission
     youtubeDL
 
-    # meta
-    muJ
-    muJava
-    muGo
-    muHaskell
-    muLisp
-    muML
-    muRust
+    # audio
+    audacity
+    fluidsynth
+    mpc
+    # mpd
+    ncmpc
+    picard
+    sox
+    timidity
+    vorbisgain
+    vorbisTools
+
+    # image
+    geeqie
+    gimp
+    gimpPlugins.lqrPlugin
+    imagemagick
+    inkscape
+    mcomix
+    scrot
+    xfce.ristretto
+
+    # video
+    guvcview
+    mplayer2-patch
+    swftools
+
+    # system
+    hddtemp
+
   ];
 };
 
@@ -173,6 +246,43 @@ muJava = pkgs.buildEnv {
   ];
 };
 
+muJavaScript = pkgs.buildEnv {
+  name = "muJavaScript";
+  paths = [
+    nodejs
+  ];
+};
+
+muC = pkgs.buildEnv {
+  name = "muC";
+  paths = [
+    gcc
+    gdb
+    valgrind
+  ];
+};
+
+firefox-patch = (wrapFirefox
+  { browser = stdenv.lib.overrideDerivation firefox (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./firefox-symlink.patch
+    ];
+  });
+});
+
+mplayer2-patch = stdenv.lib.overrideDerivation mplayer2 (old: {
+  patches = (if old ? patches then old.patches else []) ++ [
+    ./mplayer2-autosub.patch
+  ];
+});
+
+emacs-patch = stdenv.lib.overrideDerivation emacs (old: {
+  patches = (if old ? patches then old.patches else []) ++ [
+    ./emacs-key-input.patch
+  ];
+});
+
+
 };
 
 # general options
@@ -180,5 +290,12 @@ allowUnfree = true;
 
 # has some fonts bug I'm too tired to debug
 unison.enableX11 = false;
+
+# plugins
+firefox.enableGoogleTalkPlugin	= true;
+firefox.enableAdobeFlash      	= true;
+
+# needed for auth
+security.setuidPrograms = [ "slock" ];
 
 }

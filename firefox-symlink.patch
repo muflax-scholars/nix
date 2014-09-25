@@ -1,0 +1,57 @@
+From 52119cb9dc1be2f8c326bbfc2c5bceef872c9683 Mon Sep 17 00:00:00 2001
+From: txemagon <txema.gonz@gmail.com>
+Date: Thu, 28 Feb 2013 10:18:58 +0100
+Subject: [PATCH] Stop resolving symlinks in the file scheme
+
+---
+ README.txt                              | 11 +++++++++++
+ netwerk/protocol/file/nsFileChannel.cpp |  5 +++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/README.txt b/README.txt
+index da882f5..4730a8c 100644
+--- a/README.txt
++++ b/README.txt
+@@ -1,3 +1,14 @@
++This patch prevent firefox from resolving symlinks whith the file://
++scheme.
++
++Just add the Boolean preference (in about:config):
++
++   network.file.allowSymlinks
++
++Set it to true.
++
++-----
++
+ An explanation of the Mozilla Source Code Directory Structure and links to
+ project pages with documentation can be found at:
+ 
+diff --git a/netwerk/protocol/file/nsFileChannel.cpp b/netwerk/protocol/file/nsFileChannel.cpp
+index 7eba297..e4e1fe4 100644
+--- a/netwerk/protocol/file/nsFileChannel.cpp
++++ b/netwerk/protocol/file/nsFileChannel.cpp
+@@ -22,8 +22,12 @@
+ #include "nsIMIMEService.h"
+ #include <algorithm>
+ 
++#include "mozilla/Preferences.h"
++
+ //-----------------------------------------------------------------------------
+ 
++using namespace mozilla;
++
+ class nsFileCopyEvent : public nsRunnable {
+ public:
+   nsFileCopyEvent(nsIOutputStream *dest, nsIInputStream *source, int64_t len)
+@@ -253,6 +257,7 @@ nsFileChannel::nsFileChannel(nsIURI *uri)
+   bool symLink;
+   nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(uri);
+   if (fileURL && 
++      !Preferences::GetBool("network.file.allowSymlinks") &&
+       NS_SUCCEEDED(fileURL->GetFile(getter_AddRefs(file))) &&
+       NS_SUCCEEDED(file->IsSymlink(&symLink)) && 
+       symLink &&
+-- 
+2.0.3
+

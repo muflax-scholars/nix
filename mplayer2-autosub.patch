@@ -1,0 +1,13 @@
+diff --git a/mplayer.c b/mplayer.c
+index afc1249..ee18717 100644
+--- a/mplayer.c
++++ b/mplayer.c
+@@ -2226,7 +2226,7 @@ static int select_subtitle(MPContext *mpctx)
+                 M_PROPERTY_OK;
+     }
+ 
+-    if (!found && opts->sub_id == -1) {
++    if (!found && opts->sub_id == -1 && opts->sub_auto) {
+         // finally select subs by language and container hints
+         if (opts->sub_id == -1)
+             opts->sub_id =

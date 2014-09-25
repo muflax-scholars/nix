@@ -1,0 +1,53 @@
+diff --git a/lisp/international/quail.el b/lisp/international/quail.el
+index d670191..ab59ef1 100644
+--- a/lisp/international/quail.el
++++ b/lisp/international/quail.el
+@@ -279,7 +279,7 @@ LEIM is available from the same ftp directory as Emacs."))
+       (define-key map (char-to-string i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (setq i 128)
+-    (while (< i 256)
++    (while (< i 1000)
+       (define-key map (vector i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (define-key map "\177" 'quail-delete-last-char)
+@@ -350,7 +350,7 @@ of ten.")
+       (define-key map (char-to-string i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (setq i 128)
+-    (while (< i 256)
++    (while (< i 1000)
+       (define-key map (vector i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (define-key map "\177" 'quail-delete-last-char)
+@@ -371,7 +371,7 @@ This map is activated while translation region is active.")
+       (define-key map (char-to-string i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (setq i 128)
+-    (while (< i 256)
++    (while (< i 1000)
+       (define-key map (vector i) 'quail-self-insert-command)
+       (setq i (1+ i)))
+     (define-key map "\C-b" 'quail-conversion-backward-char)
+diff --git a/src/keyboard.c b/src/keyboard.c
+index a5a9ad9..1dceb4c 100644
+--- a/src/keyboard.c
++++ b/src/keyboard.c
+@@ -3025,7 +3025,7 @@ read_char (int commandflag, Lisp_Object map,
+      save the echo area contents for it to refer to.  */
+   if (INTEGERP (c)
+       && ! NILP (Vinput_method_function)
+-      && ' ' <= XINT (c) && XINT (c) < 256 && XINT (c) != 127)
++      && ' ' <= XINT (c) && XINT (c) < 1000 && XINT (c) != 127)
+     {
+       previous_echo_area_message = Fcurrent_message ();
+       Vinput_method_previous_message = previous_echo_area_message;
+@@ -3055,7 +3055,7 @@ read_char (int commandflag, Lisp_Object map,
+       /* Don't run the input method within a key sequence,
+ 	 after the first event of the key sequence.  */
+       && NILP (prev_event)
+-      && ' ' <= XINT (c) && XINT (c) < 256 && XINT (c) != 127)
++      && ' ' <= XINT (c) && XINT (c) < 1000 && XINT (c) != 127)
+     {
+       Lisp_Object keys;
+       ptrdiff_t key_count;
