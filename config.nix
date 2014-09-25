@@ -262,12 +262,13 @@ muC = pkgs.buildEnv {
   ];
 };
 
-firefox-patch = (wrapFirefox
-  { browser = stdenv.lib.overrideDerivation firefox (old: {
-    patches = (if old ? patches then old.patches else []) ++ [
-      ./firefox-symlink.patch
-    ];
-  });
+firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
+
+firefox-patch = stdenv.lib.overrideDerivation firefoxWrapper (old: {
+  # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
+  plugins = old.plugins ++ [
+    (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
+  ];
 });
 
 mplayer2-patch = stdenv.lib.overrideDerivation mplayer2 (old: {
