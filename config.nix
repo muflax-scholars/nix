@@ -166,4 +166,7 @@ muJava = pkgs.buildEnv {
 # general options
 allowUnfree = true;
 
+# has some fonts bug I'm too tired to debug
+unison.enableX11 = false;
+
 }
