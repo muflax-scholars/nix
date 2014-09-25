@@ -122,6 +122,7 @@ munix = pkgs.buildEnv {
     mailutils
     mosh
     mu
+    nss-mdns
     offlineimap
     quvi
     rtmpdump
