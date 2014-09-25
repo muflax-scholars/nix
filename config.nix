@@ -33,10 +33,6 @@ munix = pkgs.buildEnv {
     # themes
     gnome3.gnome_icon_theme
     gtk_engines
-    # this is still broken, probably due to non-nixos env; don't care much
-    kde4.kde_gtk_config
-    kde4.kde_runtime
-    kde4.kde_workspace
 
     # vcs
     cvs
@@ -58,7 +54,7 @@ munix = pkgs.buildEnv {
     kde4.okular
 
     # misc
-    kde4.kgpg
+    gnupg
     unison
 
     # games
