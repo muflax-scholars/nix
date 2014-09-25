@@ -9,12 +9,14 @@ munix = pkgs.buildEnv {
     hs 	= haskellPackages;
   in [
     # nix-related
+    gem-nix
     nix-prefetch-scripts
     nix-repl
     nox
 
     # office-y
-    [libreoffice unoconv]
+    libreoffice
+    unoconv
     (pkgs.texLiveAggregationFun {
       paths = [ texLive texLiveExtra ];
     })
