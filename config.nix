@@ -24,11 +24,11 @@ munix = pkgs.buildEnv {
     compton
     dmenu
     gnome3.gnome_icon_theme
-    gtk-engine-murrine
     gtk_engines
     kde4.kde_gtk_config
     kde4.kde_runtime
     kde4.kde_workspace
+    kde4.oxygen_icons
     nitrogen
     parcellite
     redshift
