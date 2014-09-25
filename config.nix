@@ -81,7 +81,7 @@ munix = pkgs.buildEnv {
     wkhtmltopdf # giant build :<
 
     # emacs
-    emacs-patch # needs daemon
+    emacs-patch
     vim
 
     # db
@@ -294,7 +294,7 @@ allowUnfree = true;
 unison.enableX11 = false;
 
 # plugins
-firefox.enableGoogleTalkPlugin	= true;
 firefox.enableAdobeFlash      	= true;
+firefox.enableGoogleTalkPlugin	= true;
 
 }
