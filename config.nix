@@ -52,11 +52,15 @@ munix = pkgs.buildEnv {
     xterm
 
     # text
+    fbreader
     hs.pandoc
     kde4.okular
 
     # misc
     gnupg
+    lsof
+    parallel
+    pigz
     unison
 
     # games
@@ -65,7 +69,15 @@ munix = pkgs.buildEnv {
 
     # web
     # firefox # needs custom patch
+    dropbox-cli
+    irssi
+    mosh
+    mu
+    offlineimap
+    s3cmd
     torbrowser
+    transmission
+    youtubeDL
 
     # meta
     muJ
