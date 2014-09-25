@@ -216,7 +216,7 @@ muRust = pkgs.buildEnv {
 muGo = pkgs.buildEnv {
   name = "muGo";
   paths = [
-    # go # build fails
+    go
   ];
 };
 
