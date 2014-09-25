@@ -28,7 +28,7 @@ munix = pkgs.buildEnv {
     nitrogen
     parcellite
     redshift
-    slock
+    # slock # needs suid
     wmname
     xcalib
 
@@ -295,8 +295,5 @@ unison.enableX11 = false;
 # plugins
 firefox.enableGoogleTalkPlugin	= true;
 firefox.enableAdobeFlash      	= true;
-
-# needed for auth
-security.setuidPrograms = [ "slock" ];
 
 }
