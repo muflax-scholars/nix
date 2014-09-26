@@ -80,7 +80,7 @@ in recurseIntoAttrs rec {
   };
 
   haskell = hiPrio (pkgs.buildEnv {
-    name = "haskell";
+    name = "munix-haskell";
     paths = [
       hs.cabalInstall
       hs.cabal2nix
@@ -93,7 +93,7 @@ in recurseIntoAttrs rec {
   });
 
   lisp = pkgs.buildEnv {
-    name = "lisp";
+    name = "munix-lisp";
     paths = [
       # common lisp
       sbcl
@@ -110,28 +110,28 @@ in recurseIntoAttrs rec {
   };
 
   rust = pkgs.buildEnv {
-    name = "rust";
+    name = "munix-rust";
     paths = [
       rustcMaster
     ];
   };
 
   go = pkgs.buildEnv {
-    name = "go";
+    name = "munix-go";
     paths = [
       pkgs.go
     ];
   };
 
   j = pkgs.buildEnv {
-    name = "j";
+    name = "munix-j";
     paths = [
       # pkgs.j # broken
     ];
   };
 
   ml = pkgs.buildEnv {
-    name = "ml";
+    name = "munix-ml";
     paths = [
       ocaml
       # ocamlPackages.ocaml_batteries # broken
@@ -143,21 +143,21 @@ in recurseIntoAttrs rec {
   };
 
   java = pkgs.buildEnv {
-    name = "java";
+    name = "munix-java";
     paths = [
       icedtea7_jdk
     ];
   };
 
   javascript = pkgs.buildEnv {
-    name = "javascript";
+    name = "munix-javascript";
     paths = [
       nodejs
     ];
   };
 
   c = pkgs.buildEnv {
-    name = "c";
+    name = "munix-c";
     paths = [
       gcc
       gdb
@@ -166,14 +166,14 @@ in recurseIntoAttrs rec {
   };
 
   coq = pkgs.buildEnv {
-    name = "coq";
+    name = "munix-coq";
     paths = [
       pkgs.coq
     ];
   };
 
   office = pkgs.buildEnv {
-    name = "office";
+    name = "munix-office";
     paths = [
       libreoffice
       unoconv
@@ -181,7 +181,7 @@ in recurseIntoAttrs rec {
   };
 
   tex = pkgs.buildEnv {
-    name = "tex";
+    name = "munix-tex";
     paths = [
       (pkgs.texLiveAggregationFun {
         paths = [ texinfo texLive texLiveExtra texLiveCMSuper ];})
@@ -189,7 +189,7 @@ in recurseIntoAttrs rec {
   };
 
   wm = pkgs.buildEnv {
-    name = "wm";
+    name = "munix-wm";
     paths = [
       awesome
       compton
@@ -209,7 +209,7 @@ in recurseIntoAttrs rec {
   };
 
   code = pkgs.buildEnv {
-    name = "code";
+    name = "munix-code";
     paths = [
       # coding
       cloc
@@ -237,7 +237,7 @@ in recurseIntoAttrs rec {
   };
 
   txt = pkgs.buildEnv {
-    name = "txt";
+    name = "munix-txt";
     paths = [
       # media
       calibre
@@ -265,7 +265,7 @@ in recurseIntoAttrs rec {
   };
 
   web = pkgs.buildEnv {
-    name = "web";
+    name = "munix-web";
     paths = [
       aria2
       dropbox-cli
@@ -288,7 +288,7 @@ in recurseIntoAttrs rec {
   };
 
   audio = pkgs.buildEnv {
-    name = "audio";
+    name = "munix-audio";
     paths = [
       audacity
       fluidsynth
@@ -304,7 +304,7 @@ in recurseIntoAttrs rec {
   };
 
   video = pkgs.buildEnv {
-    name = "video";
+    name = "munix-video";
     paths = [
       guvcview
       mplayer2
@@ -313,7 +313,7 @@ in recurseIntoAttrs rec {
   };
 
   image = pkgs.buildEnv {
-    name = "image";
+    name = "munix-image";
     paths = [
       geeqie
       gimp
@@ -327,7 +327,7 @@ in recurseIntoAttrs rec {
   };
 
   games = pkgs.buildEnv {
-    name = "games";
+    name = "munix-games";
     paths = [
       wine
       winetricks
