@@ -2,199 +2,95 @@
 
 packageOverrides = self: with pkgs; rec {
 
-# standard environment; this is a bit of a hack until we run NixOS
-munix = pkgs.buildEnv {
-  name = "munix";
-  paths = let
-    hs	= haskellPackages;
-    l 	= local;
-  in [
-    # nix-related
-    gem-nix
-    nix-prefetch-scripts
-    nix-repl
-    nox
-
-    # office-y
-    libreoffice
-    unoconv
-    (pkgs.texLiveAggregationFun {
-      paths = [ texinfo texLive texLiveExtra texLiveCMSuper ];
-    })
-
-    # wm
-    awesome
-    compton
-    dmenu
-    nitrogen
-    parcellite
-    redshift
-    # slock # needs suid
-    wmname
-    xcalib
-
-    # themes
-    gnome3.gnome_icon_theme
-    gtk_engines
-
-    # vcs
-    cvs
-    bazaar
-    darcs
-    git
-    l.gitAnnex
-    mercurial
-    subversion
-
-    # coding
-    cloc
-    gperftools
-    graphviz
-    kde4.konsole
-    silver-searcher
-    strace
-    xdotool
-    xterm
-
-    # compilers and stuff
-    l.c
-    l.go
-    l.haskell
-    l.j
-    l.java
-    l.javascript
-    l.lisp
-    l.ml
-    l.rust
-
-    # text
-    calibre
-    colordiff
-    convmv
-    dos2unix
-    fbreader
-    hs.pandoc
-    htmlTidy
-    kde4.okular
-    meld
-    pdftk
-    wdiff
-    wkhtmltopdf # giant build :<
-
-    # languages
-    hunspell
-    sdcv
-
-    # emacs
-    l.emacs
-    vim
-
-    # db
-    sqliteInteractive
-
-    # misc
-    gnupg
-    glxinfo # <3 gears <3
-    lsof
-    mc
-    parallel
-    pwgen
-    reptyr
-    rlwrap
-    tmux
-    unison
-    zsh
-
-    # archives
-    bchunk
-    libarchive
-    pigz
-    p7zip
-    rpm
-    unrar
-
-    # games
-    cowsay
-    wine
-    winetricks
-    #zdoom #fails to build
-
-    # web
-    aria2
-    dropbox-cli
-    l.firefox
-    links
-    mailutils
-    mosh
-    mu
-    nssmdns
-    offlineimap
-    quvi
-    rtmpdump
-    s3cmd
-    torbrowser
-    transmission
-    youtubeDL
-
-    # audio
-    audacity
-    fluidsynth
-    mpc
-    # mpd
-    ncmpc
-    picard
-    sox
-    timidity
-    vorbisgain
-    vorbisTools
-
-    # image
-    geeqie
-    gimp
-    gimpPlugins.lqrPlugin
-    imagemagick
-    inkscape
-    mcomix
-    scrot
-    xfce.ristretto
-
-    # video
-    guvcview
-    l.mplayer2
-    swftools
-
-    # system
-    hddtemp
-
-  ];
-};
-
-local = recurseIntoAttrs rec {
+local = let
+  # local overrides
   cabalStatic = haskellPackages.cabal.override {
     enableStaticLibraries  	= true;
     enableSharedLibraries  	= false;
     enableSharedExecutables	= false;
   };
 
-  gitAnnex = haskellPackages.gitAnnex.override {
+  gitAnnex = stdenv.lib.overrideDerivation (haskellPackages.gitAnnex.override {
     cabal = cabalStatic;
-  };
+  }) (old: {
+    # we pull in lsof and git anyway
+    propagatedUserEnvPkgs = [];
+  });
 
-  haskell = pkgs.buildEnv {
-    name = "haskell";
-    paths = let
-      hs = haskellPackages;
-    in [
-        # coding
-        hs.cabalInstall
-        hs.cabal2nix
-        hs.ghc
-        hs.ghcMod
+  firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
 
-        # meta
-        # hs.idris # broken
+  firefox = stdenv.lib.overrideDerivation pkgs.firefoxWrapper (old: {
+    # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
+    plugins = old.plugins ++ [
+      (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
+    ];
+  });
+
+  mplayer2 = stdenv.lib.overrideDerivation pkgs.mplayer2 (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./mplayer2-autosub.patch
+    ];
+  });
+
+  emacs = stdenv.lib.overrideDerivation pkgs.emacs (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./emacs-key-input.patch
+    ];
+  });
+
+
+  # shorter names
+  hs = haskellPackages;
+
+in recurseIntoAttrs rec {
+  # standard environment; this is a bit of a hack until we run NixOS
+  base = pkgs.buildEnv {
+    name = "munix";
+    paths = [
+      # nix-related
+      gem-nix
+      nix-prefetch-scripts
+      nix-repl
+      nox
+
+      # essential
+      cowsay
+
+      # archives
+      bchunk
+      libarchive
+      pigz
+      p7zip
+      rpm
+      unrar
+
+      # minor stuff
+      gnupg
+      hddtemp
+      lsof
+      mc
+      parallel
+      pwgen
+      reptyr
+      rlwrap
+      tmux
+      unison
+      zsh
     ];
   };
+
+  haskell = hiPrio (pkgs.buildEnv {
+    name = "haskell";
+    paths = [
+      hs.cabalInstall
+      hs.cabal2nix
+      hs.ghc
+      hs.ghcMod
+
+      # meta
+      # hs.idris # broken
+    ];
+  });
 
   lisp = pkgs.buildEnv {
     name = "lisp";
@@ -208,7 +104,7 @@ local = recurseIntoAttrs rec {
       # scheme
       chibi
       chicken
-      # guile
+      guile
       racket
     ];
   };
@@ -238,7 +134,7 @@ local = recurseIntoAttrs rec {
     name = "ml";
     paths = [
       ocaml
-      ocamlPackages.ocaml_batteries
+      # ocamlPackages.ocaml_batteries # broken
 
       # hamlet # missing
       polyml
@@ -276,26 +172,168 @@ local = recurseIntoAttrs rec {
     ];
   };
 
-  firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
-
-  firefox = stdenv.lib.overrideDerivation pkgs.firefoxWrapper (old: {
-    # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
-    plugins = old.plugins ++ [
-      (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
+  office = pkgs.buildEnv {
+    name = "office";
+    paths = [
+      libreoffice
+      unoconv
     ];
-  });
+  };
 
-  mplayer2 = stdenv.lib.overrideDerivation pkgs.mplayer2 (old: {
-    patches = (if old ? patches then old.patches else []) ++ [
-      ./mplayer2-autosub.patch
+  tex = pkgs.buildEnv {
+    name = "tex";
+    paths = [
+      (pkgs.texLiveAggregationFun {
+        paths = [ texinfo texLive texLiveExtra texLiveCMSuper ];})
     ];
-  });
+  };
 
-  emacs = stdenv.lib.overrideDerivation pkgs.emacs (old: {
-    patches = (if old ? patches then old.patches else []) ++ [
-      ./emacs-key-input.patch
+  wm = pkgs.buildEnv {
+    name = "wm";
+    paths = [
+      awesome
+      compton
+      dmenu
+      glxinfo # <3 gears <3
+      nitrogen
+      parcellite
+      redshift
+      # slock # needs suid
+      wmname
+      xcalib
+
+      # themes
+      gnome3.gnome_icon_theme
+      gtk_engines
     ];
-  });
+  };
+
+  code = pkgs.buildEnv {
+    name = "code";
+    paths = [
+      # coding
+      cloc
+      gperftools
+      graphviz
+      kde4.konsole
+      silver-searcher
+      strace
+      xdotool
+      xterm
+
+      # vcs
+      cvs
+      bazaar
+      darcs
+      git
+      gitAnnex
+      mercurial
+      subversion
+
+      # db
+      sqliteInteractive
+
+    ];
+  };
+
+  txt = pkgs.buildEnv {
+    name = "txt";
+    paths = [
+      # media
+      calibre
+      fbreader
+      kde4.okular
+
+      # edit
+      colordiff
+      convmv
+      dos2unix
+      hs.pandoc
+      htmlTidy
+      meld
+      pdftk
+      wdiff
+
+      # languages
+      hunspell
+      sdcv
+
+      # emacs
+      emacs
+      vim
+    ];
+  };
+
+  web = pkgs.buildEnv {
+    name = "web";
+    paths = [
+      aria2
+      dropbox-cli
+      firefox
+      links
+      mailutils
+      mosh
+      mu
+      nssmdns
+      offlineimap
+      quvi
+      rtmpdump
+      s3cmd
+      torbrowser
+      transmission
+      youtubeDL
+      # wkhtmltopdf # giant build :<
+
+    ];
+  };
+
+  audio = pkgs.buildEnv {
+    name = "audio";
+    paths = [
+      audacity
+      fluidsynth
+      mpc
+      # mpd
+      ncmpc
+      picard
+      sox
+      timidity
+      vorbisgain
+      vorbisTools
+    ];
+  };
+
+  video = pkgs.buildEnv {
+    name = "video";
+    paths = [
+      guvcview
+      mplayer2
+      swftools
+    ];
+  };
+
+  image = pkgs.buildEnv {
+    name = "image";
+    paths = [
+      geeqie
+      gimp
+      gimpPlugins.lqrPlugin
+      imagemagick
+      inkscape
+      mcomix
+      scrot
+      xfce.ristretto
+    ];
+  };
+
+  games = pkgs.buildEnv {
+    name = "games";
+    paths = [
+      wine
+      winetricks
+    ];
+  };
+
 };
 
 };
