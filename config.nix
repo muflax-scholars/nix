@@ -6,7 +6,8 @@ packageOverrides = self: with pkgs; rec {
 munix = pkgs.buildEnv {
   name = "munix";
   paths = let
-    hs 	= haskellPackages;
+    hs	= haskellPackages;
+    l 	= local;
   in [
     # nix-related
     gem-nix
@@ -41,7 +42,7 @@ munix = pkgs.buildEnv {
     bazaar
     darcs
     git
-    gitAnnexStatic
+    l.gitAnnex
     mercurial
     subversion
 
@@ -56,15 +57,15 @@ munix = pkgs.buildEnv {
     xterm
 
     # compilers and stuff
-    muC
-    muGo
-    muHaskell
-    muJ
-    muJava
-    muJavaScript
-    muLisp
-    muML
-    muRust
+    l.c
+    l.go
+    l.haskell
+    l.j
+    l.java
+    l.javascript
+    l.lisp
+    l.ml
+    l.rust
 
     # text
     calibre
@@ -85,7 +86,7 @@ munix = pkgs.buildEnv {
     sdcv
 
     # emacs
-    emacs-patch
+    l.emacs
     vim
 
     # db
@@ -121,7 +122,7 @@ munix = pkgs.buildEnv {
     # web
     aria2
     dropbox-cli
-    firefox-patch
+    l.firefox
     links
     mailutils
     mosh
@@ -159,7 +160,7 @@ munix = pkgs.buildEnv {
 
     # video
     guvcview
-    mplayer2-patch
+    l.mplayer2
     swftools
 
     # system
@@ -168,133 +169,134 @@ munix = pkgs.buildEnv {
   ];
 };
 
-cabalStatic = haskellPackages.cabal.override {
-  enableStaticLibraries  	= true;
-  enableSharedLibraries  	= false;
-  enableSharedExecutables	= false;
+local = recurseIntoAttrs rec {
+  cabalStatic = haskellPackages.cabal.override {
+    enableStaticLibraries  	= true;
+    enableSharedLibraries  	= false;
+    enableSharedExecutables	= false;
+  };
+
+  gitAnnex = haskellPackages.gitAnnex.override {
+    cabal = cabalStatic;
+  };
+
+  haskell = pkgs.buildEnv {
+    name = "haskell";
+    paths = let
+      hs = haskellPackages;
+    in [
+        # coding
+        hs.cabalInstall
+        hs.cabal2nix
+        hs.ghc
+        hs.ghcMod
+
+        # meta
+        # hs.idris # broken
+    ];
+  };
+
+  lisp = pkgs.buildEnv {
+    name = "lisp";
+    paths = [
+      # common lisp
+      sbcl
+      clisp
+      ccl # clozurecl
+      ecl
+
+      # scheme
+      chibi
+      chicken
+      # guile
+      racket
+    ];
+  };
+
+  rust = pkgs.buildEnv {
+    name = "rust";
+    paths = [
+      rustcMaster
+    ];
+  };
+
+  go = pkgs.buildEnv {
+    name = "go";
+    paths = [
+      pkgs.go
+    ];
+  };
+
+  j = pkgs.buildEnv {
+    name = "j";
+    paths = [
+      # pkgs.j # broken
+    ];
+  };
+
+  ml = pkgs.buildEnv {
+    name = "ml";
+    paths = [
+      ocaml
+      ocamlPackages.ocaml_batteries
+
+      # hamlet # missing
+      polyml
+      smlnj
+    ];
+  };
+
+  java = pkgs.buildEnv {
+    name = "java";
+    paths = [
+      icedtea7_jdk
+    ];
+  };
+
+  javascript = pkgs.buildEnv {
+    name = "javascript";
+    paths = [
+      nodejs
+    ];
+  };
+
+  c = pkgs.buildEnv {
+    name = "c";
+    paths = [
+      gcc
+      gdb
+      valgrind
+    ];
+  };
+
+  coq = pkgs.buildEnv {
+    name = "coq";
+    paths = [
+      pkgs.coq
+    ];
+  };
+
+  firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
+
+  firefox = stdenv.lib.overrideDerivation pkgs.firefoxWrapper (old: {
+    # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
+    plugins = old.plugins ++ [
+      (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
+    ];
+  });
+
+  mplayer2 = stdenv.lib.overrideDerivation pkgs.mplayer2 (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./mplayer2-autosub.patch
+    ];
+  });
+
+  emacs = stdenv.lib.overrideDerivation pkgs.emacs (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./emacs-key-input.patch
+    ];
+  });
 };
-
-gitAnnexStatic = haskellPackages.gitAnnex.override {
-  cabal = cabalStatic;
-};
-
-muHaskell = pkgs.buildEnv {
-  name = "muHaskell";
-  paths = let
-    hs = haskellPackages;
-  in [
-      # coding
-      hs.cabalInstall
-      hs.cabal2nix
-      hs.ghc
-      hs.ghcMod
-
-      # meta
-      # hs.idris # broken
-  ];
-};
-
-muLisp = pkgs.buildEnv {
-  name = "muLisp";
-  paths = [
-    # common lisp
-    sbcl
-    clisp
-    ccl # clozurecl
-    ecl
-
-    # scheme
-    chibi
-    chicken
-    # guile
-    racket
-  ];
-};
-
-muRust = pkgs.buildEnv {
-  name = "muRust";
-  paths = [
-    rustcMaster
-  ];
-};
-
-muGo = pkgs.buildEnv {
-  name = "muGo";
-  paths = [
-    go
-  ];
-};
-
-muJ = pkgs.buildEnv {
-  name = "muJ";
-  paths = [
-    # j # broken
-  ];
-};
-
-muML = pkgs.buildEnv {
-  name = "muML";
-  paths = [
-    ocaml
-    ocamlPackages.ocaml_batteries
-
-    # hamlet # missing
-    polyml
-    smlnj
-  ];
-};
-
-muJava = pkgs.buildEnv {
-  name = "muJava";
-  paths = [
-    icedtea7_jdk
-  ];
-};
-
-muJavaScript = pkgs.buildEnv {
-  name = "muJavaScript";
-  paths = [
-    nodejs
-  ];
-};
-
-muC = pkgs.buildEnv {
-  name = "muC";
-  paths = [
-    gcc
-    gdb
-    valgrind
-  ];
-};
-
-muCoq = pkgs.buildEnv {
-  name = "muCoq";
-  paths = [
-    coq
-  ];
-};
-
-firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
-
-firefox-patch = stdenv.lib.overrideDerivation firefoxWrapper (old: {
-  # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
-  plugins = old.plugins ++ [
-    (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
-  ];
-});
-
-mplayer2-patch = stdenv.lib.overrideDerivation mplayer2 (old: {
-  patches = (if old ? patches then old.patches else []) ++ [
-    ./mplayer2-autosub.patch
-  ];
-});
-
-emacs-patch = stdenv.lib.overrideDerivation emacs (old: {
-  patches = (if old ? patches then old.patches else []) ++ [
-    ./emacs-key-input.patch
-  ];
-});
-
 
 };
 
