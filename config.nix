@@ -143,7 +143,7 @@ in recurseIntoAttrs rec {
     name = "munix-ml";
     paths = [
       ocaml
-      # ocamlPackages.ocaml_batteries # broken
+      ocamlPackages.ocaml_batteries
 
       # hamlet # missing
       polyml
