@@ -58,11 +58,13 @@ in recurseIntoAttrs rec {
 
       # archives
       bchunk
+      gnutar
       libarchive
       pigz
       p7zip
       rpm
       unrar
+      (unzip.override { enableNLS = true; })
 
       # minor stuff
       gnupg
