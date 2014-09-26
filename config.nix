@@ -18,7 +18,7 @@ munix = pkgs.buildEnv {
     libreoffice
     unoconv
     (pkgs.texLiveAggregationFun {
-      paths = [ texLive texLiveExtra ];
+      paths = [ texinfo texLive texLiveExtra texLiveCMSuper ];
     })
 
     # wm
