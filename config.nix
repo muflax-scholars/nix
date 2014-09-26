@@ -267,6 +267,13 @@ muC = pkgs.buildEnv {
   ];
 };
 
+muCoq = pkgs.buildEnv {
+  name = "muCoq";
+  paths = [
+    coq
+  ];
+};
+
 firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
 
 firefox-patch = stdenv.lib.overrideDerivation firefoxWrapper (old: {
