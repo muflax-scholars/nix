@@ -66,8 +66,6 @@ in recurseIntoAttrs rec {
 
       # minor stuff
       gnupg
-      hddtemp
-      lsof
       mc
       parallel
       pwgen
@@ -76,6 +74,15 @@ in recurseIntoAttrs rec {
       tmux
       unison
       zsh
+
+      # system
+      extundelete
+      hddtemp
+      inotifyTools
+      lsof
+      netcat
+      nmap
+      vnstat
     ];
   };
 
@@ -232,7 +239,6 @@ in recurseIntoAttrs rec {
 
       # db
       sqliteInteractive
-
     ];
   };
 
@@ -283,7 +289,6 @@ in recurseIntoAttrs rec {
       transmission
       youtubeDL
       # wkhtmltopdf # giant build :<
-
     ];
   };
 
