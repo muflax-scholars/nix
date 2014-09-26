@@ -80,6 +80,10 @@ munix = pkgs.buildEnv {
     wdiff
     wkhtmltopdf # giant build :<
 
+    # languages
+    hunspell
+    sdcv
+
     # emacs
     emacs-patch
     vim
