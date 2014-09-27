@@ -90,6 +90,7 @@ in recurseIntoAttrs rec {
       lsof
       netcat
       nmap
+      utillinuxCurses
       vnstat
     ];
   };
