@@ -30,6 +30,12 @@ local = let
     patches = (if old ? patches then old.patches else []) ++ [
       ./mplayer2-autosub.patch
     ];
+    buildInputs = old.buildInputs ++ [libjpeg];
+    configureFlags = old.configureFlags + ''
+      --enable-jpeg
+      --extra-cflags=-I${libjpeg}/include
+      --extra-ldflags=-L${libjpeg}/lib
+    '';
   });
 
   emacs = stdenv.lib.overrideDerivation pkgs.emacs (old: {
@@ -361,5 +367,4 @@ unison.enableX11 = false;
 # plugins
 firefox.enableAdobeFlash      	= true;
 firefox.enableGoogleTalkPlugin	= true;
-
 }
