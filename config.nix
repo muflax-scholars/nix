@@ -38,6 +38,12 @@ local = let
     ];
   });
 
+  zsh = stdenv.lib.overrideDerivation pkgs.zsh (old: {
+    buildInputs = old.buildInputs ++ [pcre];
+    preConfigure = old.preConfigure + ''
+      configureFlags="$configureFlags --enable-pcre"
+    '';
+  });
 
   # shorter names
   hs = haskellPackages;
