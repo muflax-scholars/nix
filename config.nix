@@ -73,6 +73,7 @@ in recurseIntoAttrs rec {
       reptyr
       rlwrap
       tmux
+      tzdata
       unison
       zsh
 
