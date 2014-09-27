@@ -264,7 +264,9 @@ in recurseIntoAttrs rec {
       wdiff
 
       # languages
-      hunspell
+      aspell
+      aspell-dict-en	# for some tools that rely on aspell
+      hunspell      	# normal dict with dicts in ~/
       sdcv
 
       # emacs
