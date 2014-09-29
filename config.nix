@@ -265,7 +265,7 @@ in recurseIntoAttrs rec {
 
       # languages
       aspell
-      aspell-dict-en	# for some tools that rely on aspell
+      aspellDicts.en	# for some tools that rely on aspell
       hunspell      	# normal dict with dicts in ~/
       sdcv
 
