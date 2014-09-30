@@ -45,7 +45,6 @@ local = let
   # japanese zips etc
   unzip = pkgs.unzip.override { enableNLS = true; };
 
-  # git
   git = pkgs.gitAndTools.git.override { svnSupport = true; };
 
 in recurseIntoAttrs rec {
@@ -359,7 +358,7 @@ in recurseIntoAttrs rec {
 allowUnfree = true;
 
 # browser plugins
-enableAdobeFlash      	= true;
-enableGoogleTalkPlugin	= true;
+firefox.enableAdobeFlash      	= true;
+firefox.enableGoogleTalkPlugin	= true;
 
 }
