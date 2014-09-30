@@ -3,6 +3,9 @@
 packageOverrides = self: with pkgs; rec {
 
 local = let
+  # shorter names
+  hs = haskellPackages;
+
   # local overrides
   cabalStatic = haskellPackages.cabal.override {
     enableStaticLibraries  	= true;
@@ -10,9 +13,7 @@ local = let
     enableSharedExecutables	= false;
   };
 
-  gitAnnex = stdenv.lib.overrideDerivation (haskellPackages.gitAnnex.override {
-    cabal = cabalStatic;
-  }) (old: {
+  gitAnnex = stdenv.lib.overrideDerivation hs.gitAnnex (old: {
     # we pull in lsof and git anyway
     propagatedUserEnvPkgs = [];
   });
@@ -38,8 +39,14 @@ local = let
     ];
   });
 
-  # shorter names
-  hs = haskellPackages;
+  # has some fonts bug I'm too tired to debug
+  unison = pkgs.unison.override { enableX11 = false; };
+
+  # japanese zips etc
+  unzip = pkgs.unzip.override { enableNLS = true; };
+
+  # git
+  git = pkgs.gitAndTools.git.override { svnSupport = true; };
 
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
@@ -63,7 +70,7 @@ in recurseIntoAttrs rec {
       p7zip
       rpm
       unrar
-      (unzip.override { enableNLS = true; })
+      unzip
 
       # minor stuff
       gnupg
@@ -351,10 +358,8 @@ in recurseIntoAttrs rec {
 # general options
 allowUnfree = true;
 
-# has some fonts bug I'm too tired to debug
-unison.enableX11 = false;
+# browser plugins
+enableAdobeFlash      	= true;
+enableGoogleTalkPlugin	= true;
 
-# plugins
-firefox.enableAdobeFlash      	= true;
-firefox.enableGoogleTalkPlugin	= true;
 }
