@@ -102,11 +102,26 @@ in recurseIntoAttrs rec {
       hs.cabal2nix
       hs.ghc
       hs.ghcMod
-
-      # meta
-      # hs.idris # broken
     ];
   });
+
+  idris = pkgs.buildEnv {
+    name = "munix-idris";
+    paths = [
+      hs.idris
+    ];
+  };
+
+  agda = pkgs.buildEnv {
+    name = "munix-agda";
+    paths = [
+      # needs conflicts resolved
+      hs.Agda
+      agdaPrelude
+      AgdaStdlib
+      AgdaSheaves
+    ];
+  };
 
   lisp = pkgs.buildEnv {
     name = "munix-lisp";
@@ -128,6 +143,7 @@ in recurseIntoAttrs rec {
   rust = pkgs.buildEnv {
     name = "munix-rust";
     paths = [
+      cargoSnapshot
       rustcMaster
     ];
   };
@@ -146,6 +162,8 @@ in recurseIntoAttrs rec {
       ocamlPackages.ocaml_batteries
 
       # hamlet # missing
+      aliceml
+      manticore
       polyml
       smlnj
     ];
@@ -291,7 +309,7 @@ in recurseIntoAttrs rec {
       rtmpdump
       s3cmd
       torbrowser
-      transmission
+      # transmission # needs qt version
       youtubeDL
       # wkhtmltopdf # giant build :<
 
