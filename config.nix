@@ -285,6 +285,7 @@ in recurseIntoAttrs rec {
     name = "munix-web";
     paths = [
       aria2
+      # chromium # giant build :<
       dropbox-cli
       firefox
       links
@@ -300,6 +301,10 @@ in recurseIntoAttrs rec {
       transmission
       youtubeDL
       # wkhtmltopdf # giant build :<
+
+      # evernote needs packaging, manual deps for now
+      opencv
+      qt48Full
     ];
   };
 
