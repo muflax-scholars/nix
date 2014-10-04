@@ -132,13 +132,6 @@ in recurseIntoAttrs rec {
     ];
   };
 
-  go = pkgs.buildEnv {
-    name = "munix-go";
-    paths = [
-      pkgs.go
-    ];
-  };
-
   j = pkgs.buildEnv {
     name = "munix-j";
     paths = [
