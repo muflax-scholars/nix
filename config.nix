@@ -259,6 +259,9 @@ in recurseIntoAttrs rec {
 
       # db
       sqliteInteractive
+
+      # libs
+      readline
     ];
   };
 
