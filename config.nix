@@ -39,6 +39,19 @@ local = let
     ];
   });
 
+  anki = stdenv.lib.overrideDerivation pkgs.anki (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./anki-profile.patch
+      ./anki-search-results.patch
+    ];
+
+    # rebuild patched UI
+    buildInputs = old.buildInputs ++ [perl pyqt4];
+    buildPhase = ''
+      ./tools/build_ui.sh
+    '';
+  });
+
   # has some fonts bug I'm too tired to debug
   unison = pkgs.unison.override { enableX11 = false; };
 
@@ -292,6 +305,9 @@ in recurseIntoAttrs rec {
       # emacs
       emacs
       vim
+
+      # anki
+      anki
     ];
   };
 
