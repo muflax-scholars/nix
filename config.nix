@@ -343,7 +343,7 @@ in recurseIntoAttrs rec {
     paths = [
       audacity
       fluidsynth
-      mpc
+      mpc_cli
       # mpd
       ncmpc
       picard
