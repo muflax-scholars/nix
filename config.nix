@@ -13,11 +13,6 @@ local = let
     enableSharedExecutables	= false;
   };
 
-  gitAnnex = stdenv.lib.overrideDerivation hs.gitAnnex (old: {
-    # we pull in lsof and git anyway
-    propagatedUserEnvPkgs = [];
-  });
-
   firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
 
   firefox = stdenv.lib.overrideDerivation pkgs.firefoxWrapper (old: {
@@ -55,14 +50,9 @@ local = let
   # has some fonts bug I'm too tired to debug
   unison = pkgs.unison.override { enableX11 = false; };
 
-  # japanese zips etc
-  unzip = pkgs.unzip.override { enableNLS = true; };
-
-  git = pkgs.gitAndTools.git.override { svnSupport = true; };
-
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
-  base = pkgs.buildEnv {
+  base = hiPrio(pkgs.buildEnv {
     name = "munix";
     paths = [
       # nix-related
@@ -82,7 +72,7 @@ in recurseIntoAttrs rec {
       p7zip
       rpm
       unrar
-      unzip
+      unzipNLS
 
       # minor stuff
       gnupg
@@ -106,7 +96,7 @@ in recurseIntoAttrs rec {
       utillinuxCurses
       vnstat
     ];
-  };
+  });
 
   haskell = hiPrio (pkgs.buildEnv {
     name = "munix-haskell";
@@ -265,8 +255,8 @@ in recurseIntoAttrs rec {
       cvs
       bazaar
       darcs
-      git
-      gitAnnex
+      gitFull
+      hs.gitAnnex
       mercurial
       subversion
 
