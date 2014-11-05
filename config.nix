@@ -375,6 +375,14 @@ in recurseIntoAttrs rec {
     ];
   };
 
+  d = pkgs.buildEnv {
+    name = "munix-d";
+    paths = [
+      pkgs.dmd
+    ];
+  };
+
+
 };
 
 };
