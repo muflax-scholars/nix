@@ -32,6 +32,8 @@ local = let
     patches = (if old ? patches then old.patches else []) ++ [
       ./emacs-key-input.patch
     ];
+    # debugging
+    dontStrip = true;
   });
 
   anki = stdenv.lib.overrideDerivation pkgs.anki (old: {
