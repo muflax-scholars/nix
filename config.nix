@@ -30,9 +30,19 @@ local = let
   });
 
   emacs = odev pkgs.emacs (old: {
+    name = "emacs-24.3";
+    src = fetchurl {
+      url    = "mirror://gnu/emacs/emacs-24.3.tar.xz";
+      sha256 = "1385qzs3bsa52s5rcncbrkxlydkw0ajzrvfxgv8rws5fx512kakh";
+    };
+    # On NixOS, help Emacs find `crt*.o'.
+    configureFlags = old.configureFlags ++ stdenv.lib.optional (stdenv ? glibc)
+      [ "--with-crt-dir=${stdenv.glibc}/lib" ];
+
     patches = (if old ? patches then old.patches else []) ++ [
       ./emacs-key-input.patch
     ];
+
     # debugging
     dontStrip = true;
   });
