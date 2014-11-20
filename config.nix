@@ -285,7 +285,7 @@ in recurseIntoAttrs rec {
       # media
       calibre
       fbreader
-      kde4.okular
+      pdfgrep
       zathura
 
       # edit
