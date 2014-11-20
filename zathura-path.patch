@@ -1,0 +1,196 @@
+diff --git a/zathura/config.c b/zathura/config.c
+index 25275af..32d38c9 100644
+--- a/config.c
++++ b/config.c
+@@ -224,10 +224,14 @@ config_load_default(zathura_t* zathura)
+   bool_value = false;
+   girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
+   bool_value = false;
++  girara_setting_add(gsession, "window-title-original-path",     &bool_value,  BOOLEAN, false, _("Use original path of the file in the window title"), NULL, NULL);
++  bool_value = false;
+   girara_setting_add(gsession, "window-title-page",      &bool_value,  BOOLEAN, false, _("Display the page number in the window title"), NULL, NULL);
+   bool_value = false;
+   girara_setting_add(gsession, "statusbar-basename",     &bool_value,  BOOLEAN, false, _("Use basename of the file in the statusbar"), NULL, NULL);
+   bool_value = true;
++  girara_setting_add(gsession, "statusbar-original-path",     &bool_value,  BOOLEAN, false, _("Use original path of the file in the statusbar"), NULL, NULL);
++  bool_value = false;
+   girara_setting_add(gsession, "synctex",                &bool_value,  BOOLEAN, false, _("Enable synctex support"), NULL, NULL);
+   string_value = "";
+   girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
+diff --git a/zathura/document.c b/zathura/document.c
+index 29781b6..f05d42a 100644
+--- a/document.c
++++ b/document.c
+@@ -23,6 +23,8 @@
+ struct zathura_document_s {
+   char* file_path; /**< File path of the document */
+   char* basename; /**< Basename of the document */
++  char* orig_path; /**< Path document was opened through */
++  char* orig_basename; /**< Basename of original path */
+   const char* password; /**< Password of the document */
+   unsigned int current_page_number; /**< Current page number */
+   unsigned int number_of_pages; /**< Number of pages */
+@@ -68,6 +70,7 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
+   }
+
+   GFile* file = g_file_new_for_path(path);
++  char* orig_path = NULL;
+   char* real_path = NULL;
+   const char* content_type = NULL;
+   zathura_plugin_t* plugin = NULL;
+@@ -79,6 +82,12 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
+     goto error_free;
+   }
+
++  orig_path = strdup(path);
++  if (orig_path == NULL) {
++    g_free((void*)content_type);
++    return NULL;
++  }
++
+   real_path = g_file_get_path(file);
+   if (real_path == NULL) {
+     girara_error("Error while handling path '%s'.", path);
+@@ -109,20 +118,23 @@ zathura_document_open(zathura_plugin_manager_t* plugin_manager, const char*
+     goto error_free;
+   }
+
+-  document->file_path   = real_path;
+-  document->basename    = g_file_get_basename(file);
+-  document->password    = password;
+-  document->scale       = 1.0;
+-  document->plugin      = plugin;
+-  document->adjust_mode = ZATHURA_ADJUST_NONE;
+-  document->cell_width  = 0.0;
+-  document->cell_height = 0.0;
+-  document->view_height = 0;
+-  document->view_width  = 0;
+-  document->position_x  = 0.0;
+-  document->position_y  = 0.0;
++  document->file_path     = real_path;
++  document->basename      = g_file_get_basename(file);
++  document->orig_path     = orig_path;
++  document->orig_basename = g_path_get_basename(path);
++  document->password      = password;
++  document->scale         = 1.0;
++  document->plugin        = plugin;
++  document->adjust_mode   = ZATHURA_ADJUST_NONE;
++  document->cell_width    = 0.0;
++  document->cell_height   = 0.0;
++  document->view_height   = 0;
++  document->view_width    = 0;
++  document->position_x    = 0.0;
++  document->position_y    = 0.0;
+
+   real_path = NULL;
++  free(orig_path);
+   g_object_unref(file);
+   file = NULL;
+
+@@ -242,6 +254,26 @@ zathura_document_get_basename(zathura_document_t* document)
+ }
+
+ const char*
++zathura_document_get_orig_path(zathura_document_t* document)
++{
++  if (document == NULL) {
++    return NULL;
++  }
++
++  return document->orig_path;
++}
++
++const char*
++zathura_document_get_orig_basename(zathura_document_t* document)
++{
++  if (document == NULL) {
++    return NULL;
++  }
++
++  return document->orig_basename;
++}
++
++const char*
+ zathura_document_get_password(zathura_document_t* document)
+ {
+   if (document == NULL) {
+diff --git a/zathura/document.h b/zathura/document.h
+index 08f6b20..72645a6 100644
+--- a/document.h
++++ b/document.h
+@@ -46,6 +46,21 @@ const char* zathura_document_get_path(zathura_document_t* document);
+  */
+ const char* zathura_document_get_basename(zathura_document_t* document);
+
++/* Returns the original path of the document
++*
++* @param document The document
++* @return The original file path of the document
++*/
++const char* zathura_document_get_orig_path(zathura_document_t* document);
++
++/**
++ * Returns the original basename of the document
++ *
++ * @param document The document
++ * @return The original basename of the document
++ */
++const char* zathura_document_get_orig_basename(zathura_document_t* document);
++
+ /**
+  * Returns the password of the document
+  *
+diff --git a/zathura/zathura.c b/zathura/zathura.c
+index 589dd28..106d528 100644
+--- a/zathura.c
++++ b/zathura.c
+@@ -663,11 +663,21 @@ document_open(zathura_t* zathura, const char* path, const char* password,
+
+   /* update statusbar */
+   bool basename_only = false;
++  bool original_path = false;
+   girara_setting_get(zathura->ui.session, "statusbar-basename", &basename_only);
+-  if (basename_only == false) {
+-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
++  girara_setting_get(zathura->ui.session, "statusbar-original-path", &original_path);
++  if (original_path == false) {
++    if (basename_only == false) {
++      girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, file_path);
++    } else {
++      girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_basename(document));
++    }
+   } else {
+-    girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_basename(document));
++    if (basename_only == false) {
++      girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_orig_path(document));
++    } else {
++      girara_statusbar_item_set_text(zathura->ui.session, zathura->ui.statusbar.file, zathura_document_get_orig_basename(document));
++    }
+   }
+
+   /* install file monitor */
+@@ -834,11 +844,21 @@ document_open(zathura_t* zathura, const char* path, const char* password,
+
+   /* update title */
+   basename_only = false;
++  original_path = false;
+   girara_setting_get(zathura->ui.session, "window-title-basename", &basename_only);
+-  if (basename_only == false) {
+-    girara_set_window_title(zathura->ui.session, file_path);
++  girara_setting_get(zathura->ui.session, "window-title-original-path", &original_path);
++  if (original_path == false) {
++    if (basename_only == false) {
++      girara_set_window_title(zathura->ui.session, file_path);
++    } else {
++      girara_set_window_title(zathura->ui.session, zathura_document_get_basename(document));
++    }
+   } else {
+-    girara_set_window_title(zathura->ui.session, zathura_document_get_basename(document));
++    if (basename_only == false) {
++      girara_set_window_title(zathura->ui.session, zathura_document_get_orig_path(document));
++    } else {
++      girara_set_window_title(zathura->ui.session, zathura_document_get_orig_basename(document));
++    }
+   }
+
+   g_free(file_uri);

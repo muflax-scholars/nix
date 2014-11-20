@@ -4,7 +4,8 @@ packageOverrides = self: with pkgs; rec {
 
 local = let
   # shorter names
-  hs = haskellPackages;
+  hs  	= haskellPackages;
+  odev	= stdenv.lib.overrideDerivation;
 
   # local overrides
   cabalStatic = haskellPackages.cabal.override {
@@ -15,20 +16,20 @@ local = let
 
   firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
 
-  firefox = stdenv.lib.overrideDerivation pkgs.firefoxWrapper (old: {
+  firefox = odev pkgs.firefoxWrapper (old: {
     # firefox takes way too long to build, so we wrap this with LD_PRELOAD instead
     plugins = old.plugins ++ [
       (firefox-symlinks-preload + firefox-symlinks-preload.mozillaPlugin)
     ];
   });
 
-  mplayer2 = stdenv.lib.overrideDerivation pkgs.mplayer2 (old: {
+  mplayer2 = odev pkgs.mplayer2 (old: {
     patches = (if old ? patches then old.patches else []) ++ [
       ./mplayer2-autosub.patch
     ];
   });
 
-  emacs = stdenv.lib.overrideDerivation pkgs.emacs (old: {
+  emacs = odev pkgs.emacs (old: {
     patches = (if old ? patches then old.patches else []) ++ [
       ./emacs-key-input.patch
     ];
@@ -36,7 +37,7 @@ local = let
     dontStrip = true;
   });
 
-  anki = stdenv.lib.overrideDerivation pkgs.anki (old: {
+  anki = odev pkgs.anki (old: {
     patches = (if old ? patches then old.patches else []) ++ [
       ./anki-profile.patch
       ./anki-search-results.patch
@@ -51,6 +52,14 @@ local = let
 
   # has some fonts bug I'm too tired to debug
   unison = pkgs.unison.override { enableX11 = false; };
+
+  zathura = odev pkgs.zathuraCollection.zathuraWrapper (_: {
+    zathura_core = odev pkgs.zathuraCollection.zathuraWrapper.zathura_core (old : {
+      patches = (if old ? patches then old.patches else []) ++ [
+        ./zathura-path.patch
+      ];
+    });
+  });
 
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
@@ -277,6 +286,7 @@ in recurseIntoAttrs rec {
       calibre
       fbreader
       kde4.okular
+      zathura
 
       # edit
       colordiff
