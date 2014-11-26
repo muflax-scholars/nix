@@ -97,11 +97,16 @@ in recurseIntoAttrs rec {
 
       # minor stuff
       gnupg
+      htop
+      iotop
       mc
       parallel
+      pinentry
+      powertop
       pwgen
       reptyr
       rlwrap
+      time
       tmux
       tzdata
       unison
@@ -283,6 +288,7 @@ in recurseIntoAttrs rec {
 
       # db
       sqliteInteractive
+      sqliteman
 
       # libs
       readline
@@ -343,10 +349,7 @@ in recurseIntoAttrs rec {
       # transmission # needs qt version
       youtubeDL
       # wkhtmltopdf # giant build :<
-
-      # evernote needs packaging, manual deps for now
-      opencv
-      qt48Full
+      wicd
     ];
   };
 
