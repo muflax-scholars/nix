@@ -251,6 +251,7 @@ in recurseIntoAttrs rec {
       compton
       dmenu
       glxinfo # <3 gears <3
+      libnotify
       nitrogen
       parcellite
       redshift
