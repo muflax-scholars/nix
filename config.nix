@@ -71,6 +71,17 @@ local = let
     });
   });
 
+  # workaround because we don't run Nix' avahi-daemon yet
+  mosh = odev pkgs.mosh (old: {
+    buildInputs = old.buildInputs ++ [ nssmdns ];
+    postInstall = ''
+      wrapProgram $out/bin/mosh \
+        --prefix PERL5LIB : $PERL5LIB \
+        --prefix LD_LIBRARY_PATH : ${nssmdns}/lib
+    '';
+  });
+
+
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
   base = hiPrio(pkgs.buildEnv {
