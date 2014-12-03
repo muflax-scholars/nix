@@ -226,7 +226,7 @@ in recurseIntoAttrs rec {
   c = pkgs.buildEnv {
     name = "munix-c";
     paths = [
-      # gcc
+      gcc
       gdb
       valgrind
     ];
