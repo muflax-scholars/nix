@@ -176,9 +176,11 @@ in recurseIntoAttrs rec {
       guile
       mitscheme
       racket
+      # stalin # missing
 
       # clojure
       clojure
+      leiningen
     ];
   };
 
