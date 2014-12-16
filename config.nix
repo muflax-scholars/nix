@@ -215,12 +215,12 @@ in recurseIntoAttrs rec {
     ];
   };
 
-  java = pkgs.buildEnv {
+  java = lowPrio (pkgs.buildEnv {
     name = "munix-java";
     paths = [
       icedtea7_jdk
     ];
-  };
+  });
 
   javascript = pkgs.buildEnv {
     name = "munix-javascript";
