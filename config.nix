@@ -104,6 +104,7 @@ in recurseIntoAttrs rec {
       unzipNLS
 
       # minor stuff
+      figlet
       gnupg
       htop
       iotop
@@ -115,6 +116,7 @@ in recurseIntoAttrs rec {
       reptyr
       rlwrap
       time
+      sl
       tmux
       tzdata
       unison
