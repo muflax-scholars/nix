@@ -193,7 +193,7 @@ in recurseIntoAttrs rec {
   j = pkgs.buildEnv {
     name = "munix-j";
     paths = [
-      # pkgs.j # broken
+      pkgs.j
     ];
   };
 
