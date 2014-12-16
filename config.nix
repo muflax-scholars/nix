@@ -175,8 +175,13 @@ in recurseIntoAttrs rec {
       # scheme
       chibi
       chicken
+      gambit
       guile
+      mitscheme
       racket
+
+      # clojure
+      clojure
     ];
   };
 
