@@ -297,9 +297,12 @@ in recurseIntoAttrs rec {
       xterm
 
       # vcs
-      cvs
       bazaar
+      cvs
       darcs
+      gitAndTools.darcsToGit
+      # gitAndTools.git-remote-bzr # missing
+      gitAndTools.git-remote-hg
       gitFull
       hs.gitAnnex
       mercurial
