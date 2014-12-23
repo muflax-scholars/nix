@@ -6,6 +6,8 @@ local = let
   # shorter names
   hs  	= haskellPackages;
   odev	= stdenv.lib.overrideDerivation;
+  py2 	= python2Packages;
+  py3 	= python3Packages;
 
   # local overrides
   cabalStatic = haskellPackages.cabal.override {
@@ -425,17 +427,36 @@ in recurseIntoAttrs rec {
   };
 
   # keep pythons in separate buildenvs so their priorities work
+  python2env = pkgs.python2Full.buildEnv.override {
+    extraLibs = [
+      py2.iso8601
+      py2.mock
+      py2.pip
+      py2.pyyaml
+      py2.simplejson
+      py2.sqlalchemy
+      py2.unidecode
+      py2.xlib
+    ];
+  };
+
+  python3env = pkgs.python3.buildEnv.override {
+    extraLibs = [
+
+    ];
+  };
+
   python2 = hiPrio (pkgs.buildEnv {
     name = "munix-python2";
     paths = [
-      pkgs.python2Full
+      python2env
     ];
   });
 
   python3 = pkgs.buildEnv {
     name = "munix-python3";
     paths = [
-      pkgs.python3
+      python3env
     ];
   };
 
