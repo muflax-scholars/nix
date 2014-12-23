@@ -425,6 +425,20 @@ in recurseIntoAttrs rec {
     ];
   };
 
+  # keep pythons in separate buildenvs so their priorities work
+  python2 = hiPrio (pkgs.buildEnv {
+    name = "munix-python2";
+    paths = [
+      pkgs.python2Full
+    ];
+  });
+
+  python3 = pkgs.buildEnv {
+    name = "munix-python3";
+    paths = [
+      pkgs.python3
+    ];
+  };
 
 };
 
