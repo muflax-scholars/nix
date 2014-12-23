@@ -78,7 +78,6 @@ local = let
     '';
   });
 
-
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
   base = hiPrio(pkgs.buildEnv {
@@ -364,7 +363,7 @@ in recurseIntoAttrs rec {
       rtmpdump
       s3cmd
       torbrowser
-      # transmission # needs qt version
+      transmission # needs qt version
       youtubeDL
       # wkhtmltopdf # giant build :<
       wicd
