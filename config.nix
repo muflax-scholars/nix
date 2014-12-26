@@ -62,6 +62,9 @@ local = let
     '';
   });
 
+  # has some fonts bug I'm too tired to debug
+  unison = pkgs.unison.override { enableX11 = false; };
+
   zathura = odev pkgs.zathuraCollection.zathuraWrapper (_: {
     zathura_core = odev pkgs.zathuraCollection.zathuraWrapper.zathura_core (old : {
       patches = (if old ? patches then old.patches else []) ++ [
