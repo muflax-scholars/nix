@@ -80,6 +80,8 @@ local = let
     '';
   });
 
+  bup = pkgs.bup.override { par2Support = true; };
+
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
   base = hiPrio(pkgs.buildEnv {
@@ -95,9 +97,11 @@ in recurseIntoAttrs rec {
       cowsay
 
       # archives
+      bup
       bchunk
       gnutar
       libarchive
+      par2cmdline
       pigz
       p7zip
       rpm
@@ -354,6 +358,7 @@ in recurseIntoAttrs rec {
   web = pkgs.buildEnv {
     name = "munix-web";
     paths = [
+      awscli
       aria2
       # chromium # giant build :<
       dropbox-cli
@@ -366,7 +371,6 @@ in recurseIntoAttrs rec {
       offlineimap
       quvi
       rtmpdump
-      s3cmd
       torbrowser
       transmission # needs qt version
       youtubeDL
