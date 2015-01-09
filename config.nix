@@ -447,6 +447,9 @@ in recurseIntoAttrs rec {
       py2.sqlalchemy
       py2.unidecode
       py2.xlib
+      py2.beautifulsoup
+      py2.requests
+
     ];
   };
 
