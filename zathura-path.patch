@@ -1,7 +1,7 @@
 diff --git a/zathura/config.c b/zathura/config.c
 index 25275af..32d38c9 100644
---- a/config.c
-+++ b/config.c
+--- a/zathura/config.c
++++ b/zathura/config.c
 @@ -224,10 +224,14 @@ config_load_default(zathura_t* zathura)
    bool_value = false;
    girara_setting_add(gsession, "window-title-basename",  &bool_value,  BOOLEAN, false, _("Use basename of the file in the window title"), NULL, NULL);
@@ -19,8 +19,8 @@ index 25275af..32d38c9 100644
    girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
 diff --git a/zathura/document.c b/zathura/document.c
 index 29781b6..f05d42a 100644
---- a/document.c
-+++ b/document.c
+--- a/zathura/document.c
++++ b/zathura/document.c
 @@ -23,6 +23,8 @@
  struct zathura_document_s {
    char* file_path; /**< File path of the document */
@@ -116,8 +116,8 @@ index 29781b6..f05d42a 100644
    if (document == NULL) {
 diff --git a/zathura/document.h b/zathura/document.h
 index 08f6b20..72645a6 100644
---- a/document.h
-+++ b/document.h
+--- a/zathura/document.h
++++ b/zathura/document.h
 @@ -46,6 +46,21 @@ const char* zathura_document_get_path(zathura_document_t* document);
   */
  const char* zathura_document_get_basename(zathura_document_t* document);
@@ -142,8 +142,8 @@ index 08f6b20..72645a6 100644
   *
 diff --git a/zathura/zathura.c b/zathura/zathura.c
 index 589dd28..106d528 100644
---- a/zathura.c
-+++ b/zathura.c
+--- a/zathura/zathura.c
++++ b/zathura/zathura.c
 @@ -663,11 +663,21 @@ document_open(zathura_t* zathura, const char* path, const char* password,
 
    /* update statusbar */
