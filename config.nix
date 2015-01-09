@@ -174,10 +174,11 @@ in recurseIntoAttrs rec {
     name = "munix-lisp";
     paths = [
       # common lisp
-      sbcl
-      clisp
       ccl # clozurecl
+      clisp
       ecl
+      gcl
+      sbcl
 
       # scheme
       chibi
