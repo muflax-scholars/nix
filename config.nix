@@ -299,6 +299,7 @@ in recurseIntoAttrs rec {
       gperftools
       graphviz
       kde4.konsole
+      sloccount
       silver-searcher
       strace
       xdotool
@@ -378,6 +379,7 @@ in recurseIntoAttrs rec {
       torbrowser
       transmission # needs qt version
       youtubeDL
+      w3m
       # wkhtmltopdf # giant build :<
       wicd
     ];
