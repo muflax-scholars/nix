@@ -91,7 +91,6 @@ in recurseIntoAttrs rec {
     name = "munix";
     paths = [
       # nix-related
-      gem-nix
       nix-prefetch-scripts
       nix-repl
       nox
