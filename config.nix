@@ -85,6 +85,13 @@ local = let
 
   bup = pkgs.bup.override { par2Support = true; };
 
+  uim = odev pkgs.uim (old: {
+    patches = (if old ? patches then old.patches else []) ++ [
+      ./uim-input.patch
+    ];
+  });
+
+
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
   base = hiPrio(pkgs.buildEnv {
@@ -356,6 +363,9 @@ in recurseIntoAttrs rec {
 
       # anki
       anki
+
+      # input
+      uim
     ];
   };
 

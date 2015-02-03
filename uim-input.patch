@@ -1,0 +1,85 @@
+diff --git a/emacs/key.c b/emacs/key.c
+index ae69ced..3591564 100644
+--- a/emacs/key.c
++++ b/emacs/key.c
+@@ -141,6 +141,8 @@ convert_keyname_e2u(const char *keyname)
+     return UKey_Scroll_Lock;
+   else if (strcmp("yen", keyname) == 0)
+     return UKey_Yen;
++  else if (strcmp("middle-dot", keyname) == 0)
++    return UKey_MiddleDot;
+   else if (strcmp("Multi_key", keyname) == 0
+            || strcmp("multi-key", keyname) == 0)
+     return UKey_Multi_key;
+diff --git a/gtk2/pref/gtk-keytab.h b/gtk2/pref/gtk-keytab.h
+index 4b34d87..5d00416 100644
+--- a/gtk2/pref/gtk-keytab.h
++++ b/gtk2/pref/gtk-keytab.h
+@@ -44,6 +44,7 @@ struct key_entry {
+ 
+ static struct key_entry key_tab[] = {
+   {UKey_Yen, "yen"},
++  {UKey_MiddleDot, "middle-dot"},
+   {UKey_Backspace, "backspace"},
+   {UKey_Delete, "delete"},
+   {UKey_Escape, "escape"},
+diff --git a/qt3/immodule/quiminputcontext.cpp b/qt3/immodule/quiminputcontext.cpp
+index b802492..8f8483e 100644
+--- a/qt3/immodule/quiminputcontext.cpp
++++ b/qt3/immodule/quiminputcontext.cpp
+@@ -824,6 +824,7 @@ static int unicodeToUKey (ushort c) {
+ 
+     switch (c) {
+     case 0x00A5: sym = UKey_Yen; break;
++    case 0x00B7: sym = UKey_MiddleDot; break;
+     case 0x3002: sym = UKey_Kana_Fullstop; break;
+     case 0x300C: sym = UKey_Kana_OpeningBracket; break;
+     case 0x300D: sym = UKey_Kana_ClosingBracket; break;
+diff --git a/qt4/immodule/quiminputcontext.cpp b/qt4/immodule/quiminputcontext.cpp
+index 38ee26b..55f5dab 100644
+--- a/qt4/immodule/quiminputcontext.cpp
++++ b/qt4/immodule/quiminputcontext.cpp
+@@ -946,6 +946,7 @@ static int unicodeToUKey (ushort c) {
+ 
+     switch (c) {
+     case 0x00A5: sym = UKey_Yen; break;
++    case 0x00B7: sym = UKey_MiddleDot; break;
+     case 0x3002: sym = UKey_Kana_Fullstop; break;
+     case 0x300C: sym = UKey_Kana_OpeningBracket; break;
+     case 0x300D: sym = UKey_Kana_ClosingBracket; break;
+diff --git a/uim/uim-key.c b/uim/uim-key.c
+index 9452cd2..25c3946 100644
+--- a/uim/uim-key.c
++++ b/uim/uim-key.c
+@@ -60,6 +60,7 @@ struct key_entry {
+ 
+ static struct key_entry key_tab[] = {
+   {UKey_Yen, "yen"},
++  {UKey_MiddleDot, "middle-dot"},
+   {UKey_Backspace, "backspace"},
+   {UKey_Delete, "delete"},
+   {UKey_Escape, "escape"},
+diff --git a/uim/uim.h b/uim/uim.h
+index dd6676c..0181ae1 100644
+--- a/uim/uim.h
++++ b/uim/uim.h
+@@ -84,6 +84,7 @@ enum UKey {
+   UKey_8 = 56,
+   UKey_9 = 57,
+   UKey_Yen = 165,
++  UKey_MiddleDot = 183,
+ 
+   UKey_Escape = 256,
+   UKey_Tab,
+diff --git a/xim/ximserver.cpp b/xim/ximserver.cpp
+index 3f08387..d3be5a5 100644
+--- a/xim/ximserver.cpp
++++ b/xim/ximserver.cpp
+@@ -1335,6 +1335,7 @@ void keyState::check_key(keyEventX *x)
+     else {
+ 	switch (x->key_sym) {
+ 	case XK_yen: mKey = UKey_Yen; break;
++	case XK_periodcentered: mKey = UKey_MiddleDot; break;
+ 	case XK_BackSpace: mKey = UKey_Backspace; break;
+ 	case XK_Delete: mKey = UKey_Delete; break;
+ 	case XK_Insert: mKey = UKey_Insert; break;
