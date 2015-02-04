@@ -91,7 +91,6 @@ local = let
     ];
   });
 
-
 in recurseIntoAttrs rec {
   # standard environment; this is a bit of a hack until we run NixOS
   base = hiPrio(pkgs.buildEnv {
@@ -244,14 +243,14 @@ in recurseIntoAttrs rec {
     ];
   };
 
-  c = pkgs.buildEnv {
+  c = lowPrio (pkgs.buildEnv {
     name = "munix-c";
     paths = [
       gcc
       gdb
       valgrind
     ];
-  };
+  });
 
   coq = pkgs.buildEnv {
     name = "munix-coq";
@@ -485,6 +484,14 @@ in recurseIntoAttrs rec {
     ];
   };
 
+  go = pkgs.buildEnv {
+    name = "munix-go";
+    paths = [
+      pkgs.go
+      gccgo
+    ];
+  };
+  
 };
 
 };
