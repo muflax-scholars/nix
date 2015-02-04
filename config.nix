@@ -489,9 +489,10 @@ in recurseIntoAttrs rec {
     paths = [
       pkgs.go
       gccgo
+      oniguruma # for rubex
     ];
   };
-  
+
 };
 
 };
