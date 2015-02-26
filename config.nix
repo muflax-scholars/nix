@@ -402,14 +402,17 @@ in recurseIntoAttrs rec {
     ];
   };
 
-  video = pkgs.buildEnv {
+  video = lowPrio(pkgs.buildEnv {
     name = "munix-video";
     paths = [
       guvcview
+      handbrake
+      libav
       mplayer2
       swftools
+      wxcam
     ];
-  };
+  });
 
   image = pkgs.buildEnv {
     name = "munix-image";
