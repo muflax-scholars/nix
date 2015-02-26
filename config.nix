@@ -4,17 +4,10 @@ packageOverrides = self: with pkgs; rec {
 
 local = let
   # shorter names
-  hs  	= haskellPackages;
+  hs  	= haskellngPackages;
   odev	= stdenv.lib.overrideDerivation;
   py2 	= python2Packages;
   py3 	= python3Packages;
-
-  # local overrides
-  cabalStatic = haskellPackages.cabal.override {
-    enableStaticLibraries  	= true;
-    enableSharedLibraries  	= false;
-    enableSharedExecutables	= false;
-  };
 
   firefox-symlinks-preload = pkgs.callPackage ./firefox-symlinks-preload {};
 
@@ -150,10 +143,10 @@ in recurseIntoAttrs rec {
   haskell = hiPrio (pkgs.buildEnv {
     name = "munix-haskell";
     paths = [
-      hs.cabalInstall
+      hs.cabal-install
       hs.cabal2nix
       hs.ghc
-      hs.ghcMod
+      hs.ghc-mod
     ];
   });
 
@@ -318,7 +311,7 @@ in recurseIntoAttrs rec {
       # gitAndTools.git-remote-bzr # missing
       gitAndTools.git-remote-hg
       gitFull
-      hs.gitAnnex
+      hs.git-annex
       mercurial
       subversion
 
