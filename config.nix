@@ -425,7 +425,6 @@ in recurseIntoAttrs rec {
       inkscape
       mcomix
       scrot
-      xfce.ristretto
     ];
   };
 
