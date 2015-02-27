@@ -331,6 +331,7 @@ in recurseIntoAttrs rec {
       calibre
       fbreader
       pdfgrep
+      unpaper
       zathura
 
       # edit
