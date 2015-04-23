@@ -89,11 +89,6 @@ in recurseIntoAttrs rec {
   base = hiPrio(pkgs.buildEnv {
     name = "munix";
     paths = [
-      # nix-related
-      nix-prefetch-scripts
-      nix-repl
-      nox
-
       # essential
       cowsay
 
@@ -139,6 +134,15 @@ in recurseIntoAttrs rec {
       vnstat
     ];
   });
+
+  nix = pkgs.buildEnv {
+    name = "munix-nix";
+    paths = [
+      nix-prefetch-scripts
+      nix-repl
+      nox
+    ];
+  };
 
   haskell = hiPrio (pkgs.buildEnv {
     name = "munix-haskell";
